@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Builder & Document Summarizer - Automated AI System</title>
+
+    <!-- Google Fonts: Inter & Outfit for clean academic UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. COLOR PALETTE & VARIABLES (Clean Academic & Modern UI)
+           ========================================================================== */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --primary-border: #bfdbfe;
+            
+            --secondary: #0f172a;
+            --secondary-light: #334155;
+            
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --border-light: #f1f5f9;
+            
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            
+            --accent-green: #10b981;
+            --accent-green-bg: #ecfdf5;
+            --accent-green-border: #a7f3d0;
+            
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-red-bg: #fef2f2;
+            
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
+            
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-heading: 'Outfit', var(--font-main);
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        /* Dark Mode Support */
+        [data-theme="dark"] {
+            --bg-page: #0b1120;
+            --bg-card: #151f32;
+            --border-card: #1e293b;
+            --border-light: #182234;
+            
+            --text-main: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --primary-light: rgba(37, 99, 235, 0.15);
+            --primary-border: rgba(37, 99, 235, 0.35);
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ==========================================================================
+           2. BASE RESETS
+           ========================================================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* ==========================================================================
+           3. HEADER & NAVIGATION BAR
+           ========================================================================== */
+        .site-header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-card);
+            padding: 16px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        .brand-title {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.01em;
+        }
+
+        .brand-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Server Status Pill */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--accent-green-bg);
+            border: 1px solid var(--accent-green-border);
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .status-badge.offline {
+            background: var(--accent-red-bg);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--accent-red);
+        }
+
+        .status-pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse-ring 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
+
+        .theme-toggle-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* ==========================================================================
+           4. MAIN CONTAINER & BANNER
+           ========================================================================== */
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Hero / Project Title Banner */
+        .project-hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 30px 36px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .hero-text h2 {
+            font-family: var(--font-heading);
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .hero-text p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 650px;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge-pill {
+            font-size: 0.76rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid var(--primary-border);
+        }
+
+        /* ==========================================================================
+           5. SYSTEM WORKFLOW STEPS (Great for College Viva)
+           ========================================================================== */
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .step-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-info h4 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: var(--text-main);
+        }
+
+        .step-info p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* ==========================================================================
+           6. UPLOAD SECTION
+           ========================================================================== */
+        .card-main {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+        }
+
+        .section-header h3 {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Upload Dropzone */
+        .dropzone-area {
+            border: 2px dashed #93c5fd;
+            background: var(--primary-light);
+            border-radius: var(--radius-md);
+            padding: 36px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dropzone-area:hover, .dropzone-area.dragover {
+            border-color: var(--primary);
+            background: #dbeafe;
+            transform: translateY(-1px);
+        }
+
+        .dropzone-icon {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .dropzone-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .dropzone-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        .format-tags {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .format-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Selected File Card */
+        .file-selected-box {
+            display: none;
+            margin-top: 20px;
+            padding: 14px 18px;
+            background: var(--border-light);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-type-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary);
+            color: white;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        .file-name {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .file-size {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .btn-clear-file {
+            background: none;
+            border: none;
+            color: var(--accent-red);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+        }
+        .btn-clear-file:hover {
+            background: var(--accent-red-bg);
+        }
+
+        /* Action Buttons Area */
+        .upload-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 22px;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .btn-sample {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 11px 18px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-sample:hover {
+            background: var(--border-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            transition: all 0.2s ease;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        .btn-submit:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* ==========================================================================
+           7. PROGRESS & LOADING CARD
+           ========================================================================== */
+        .loading-card {
+            display: none;
+            margin-top: 24px;
+            padding: 24px;
+            background: var(--primary-light);
+            border: 1px solid var(--primary-border);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #bfdbfe;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 14px;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .loading-sub {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        /* Error Box */
+        .alert-error {
+            display: none;
+            margin-top: 20px;
+            padding: 14px 18px;
+            background: var(--accent-red-bg);
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-sm);
+            color: #b91c1c;
+            font-size: 0.88rem;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* ==========================================================================
+           8. RESULTS SECTION
+           ========================================================================== */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Document Stats Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-value {
+            font-family: var(--font-heading);
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Result Tabs & Toolbar */
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .tabs-nav {
+            display: flex;
+            gap: 6px;
+            background: var(--bg-card);
+            padding: 4px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-card);
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button:hover {
+            color: var(--text-main);
+        }
+
+        .tab-button.active {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        /* Action Toolbar */
+        .action-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            padding: 8px 12px 8px 30px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            color: var(--text-main);
+            outline: none;
+            width: 200px;
+            transition: all 0.2s ease;
+        }
+        .search-box input:focus {
+            border-color: var(--primary);
+            width: 240px;
+        }
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .btn-tool {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            padding: 8px 14px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-tool:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--border-light);
+        }
+
+        /* Tab Panes */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* ==========================================================================
+           9. FAQ LIST ACCORDION
+           ========================================================================== */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: border-color 0.2s ease;
+        }
+
+        .faq-item:hover {
+            border-color: #cbd5e1;
+        }
+
+        .faq-item.active {
+            border-color: var(--primary);
+        }
+
+        .faq-question-bar {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            cursor: pointer;
+            background: var(--bg-card);
+            user-select: none;
+        }
+
+        .faq-question-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .faq-index {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.78rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+        }
+
+        .faq-question-text {
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .faq-question-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+        }
+
+        .btn-copy-faq {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .btn-copy-faq:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .faq-arrow {
+            font-size: 0.85rem;
+            transition: transform 0.25s ease;
+        }
+        .faq-item.active .faq-arrow {
+            transform: rotate(180deg);
+            color: var(--primary);
+        }
+
+        .faq-answer-bar {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: var(--border-light);
+            border-top: 1px solid transparent;
+        }
+        .faq-item.active .faq-answer-bar {
+            border-top-color: var(--border-card);
+        }
+
+        .faq-answer-inner {
+            padding: 18px 20px;
+            color: var(--text-secondary);
+            font-size: 0.94rem;
+            line-height: 1.65;
+        }
+
+        .no-results-msg {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border: 1px dashed var(--border-card);
+            border-radius: var(--radius-md);
+        }
+
+        /* ==========================================================================
+           10. SUMMARY POINTS TAB
+           ========================================================================== */
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .summary-actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-card);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .summary-heading {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .bullet-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bullet-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            padding: 10px 14px;
+            background: var(--border-light);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--primary);
+        }
+
+        /* ==========================================================================
+           11. SYSTEM & TECH ARCHITECTURE TAB (Professors Love This!)
+           ========================================================================== */
+        .arch-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 24px;
+        }
+
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 16px;
+        }
+
+        .arch-item {
+            padding: 16px;
+            background: var(--border-light);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-card);
+        }
+
+        .arch-item h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .arch-item p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Raw Text Area */
+        .raw-text-view {
+            margin-top: 20px;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            line-height: 1.6;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        /* ==========================================================================
+           12. TOAST NOTIFICATION
+           ========================================================================== */
+        .toast-box {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.25s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ==========================================================================
+           13. FOOTER
+           ========================================================================== */
+        .site-footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-card);
+            padding: 24px 20px;
+            text-align: center;
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            margin-top: auto;
+        }
+
+        .footer-links {
+            margin-top: 6px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* ==========================================================================
+           14. PRINT STYLESHEET (For submitting printed reports)
+           ========================================================================== */
+        @media print {
+            .site-header, .project-hero, .workflow-steps, .card-main, 
+            .results-header, .btn-tool, .action-toolbar, .site-footer, 
+            .btn-copy-faq, .faq-arrow {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .results-section {
+                display: block !important;
+            }
+            .tab-content {
+                display: block !important;
+                page-break-after: always;
+            }
+            .faq-answer-bar {
+                max-height: none !important;
+                display: block !important;
+            }
+            .faq-item {
+                border: 1px solid #ccc !important;
+                margin-bottom: 12px;
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .workflow-steps {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .arch-grid {
+                grid-template-columns: 1fr;
+            }
+            .project-hero {
+                padding: 20px;
+            }
+            .card-main {
+                padding: 20px;
+            }
+            .search-box input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==========================================================================
+         HEADER
+         ========================================================================== -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="brand-box">
+                <div class="brand-icon">📚</div>
+                <div>
+                    <h1 class="brand-title">FAQ Builder & Document Summarizer</h1>
+                    <p class="brand-sub">Automated Natural Language Processing System</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <!-- Live Backend Connectivity -->
+                <div class="status-badge" id="backendBadge" title="FastAPI Backend Status">
+                    <span class="status-pulse"></span>
+                    <span id="backendBadgeText">Checking Server...</span>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button class="theme-toggle-btn" id="btnTheme" title="Toggle Theme">
+                    🌓
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+         MAIN CONTENT
+         ========================================================================== -->
+    <main class="container">
+
+        <!-- Project Hero Banner -->
+        <section class="project-hero">
+            <div class="hero-text">
+                <h2>Document Summarization & FAQ Generation System</h2>
+                <p>
+                    An intelligent web tool that extracts raw text from PDF, DOCX, and TXT files, 
+                    generates concise bullet-point executive summaries, and synthesizes 10 frequently asked questions with verified answers.
+                </p>
+            </div>
+            <div class="hero-badges">
+                <span class="badge-pill">⚡ Fast Groq Inference</span>
+                <span class="badge-pill">🐍 Python & FastAPI</span>
+                <span class="badge-pill">📑 PDF / DOCX / TXT</span>
+            </div>
+        </section>
+
+        <!-- System Workflow Overview -->
+        <section class="workflow-steps">
+            <div class="step-box">
+                <div class="step-number">1</div>
+                <div class="step-info">
+                    <h4>Document Ingestion</h4>
+                    <p>Upload files in .pdf, .docx, or .txt format with automated format validation.</p>
+                </div>
+            </div>
+            <div class="step-box">
+                <div class="step-number">2</div>
+                <div class="step-info">
+                    <h4>Text & NLP Extraction</h4>
+                    <p>Backend parses document structure and feeds text to Groq LLM API.</p>
+                </div>
+            </div>
+            <div class="step-box">
+                <div class="step-number">3</div>
+                <div class="step-info">
+                    <h4>Summary & FAQ Synthesis</h4>
+                    <p>Generates key takeaway bullet points and 10 structured Q&A pairs.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload & Execution Card -->
+        <section class="card-main">
+            <div class="section-header">
+                <h3>📁 Select or Upload Document</h3>
+                <p>Choose any study material, report, syllabus document, or textbook chapter to process.</p>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div class="dropzone-area" id="dropArea">
+                <div class="dropzone-icon">📄</div>
+                <h4 class="dropzone-title">Click to browse or drag & drop file here</h4>
+                <p class="dropzone-subtitle">Supports PDF, Word Documents (.docx), and Plain Text (.txt)</p>
+
+                <div class="format-tags">
+                    <span class="format-tag">.PDF</span>
+                    <span class="format-tag">.DOCX</span>
+                    <span class="format-tag">.TXT</span>
+                </div>
+
+                <input type="file" id="fileInput" accept=".pdf,.docx,.txt">
+            </div>
+
+            <!-- Selected File Details Banner -->
+            <div class="file-selected-box" id="fileSelectedBox" style="display: none;">
+                <div class="file-info-left">
+                    <div class="file-type-icon" id="fileTypeIcon">TXT</div>
+                    <div>
+                        <div class="file-name" id="fileNameText">sample.txt</div>
+                        <div class="file-size" id="fileSizeText">12.5 KB</div>
+                    </div>
+                </div>
+                <button class="btn-clear-file" id="btnClearFile">Remove File ✕</button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="upload-controls">
+                <button class="btn-sample" id="btnLoadSampleDoc">
+                    💡 Load Sample AI Notes
+                </button>
+
+                <button class="btn-submit" id="btnProcessDoc" disabled>
+                    ✨ Generate Summary & FAQs
+                </button>
+            </div>
+
+            <!-- Processing / Spinner Box -->
+            <div class="loading-card" id="loadingCard">
+                <div class="loading-spinner"></div>
+                <h4 class="loading-text" id="loadingStageText">Processing Document...</h4>
+                <p class="loading-sub">Sending extracted content to Groq API. Please wait a few seconds.</p>
+            </div>
+
+            <!-- Error Display -->
+            <div class="alert-error" id="errorBox">
+                <span>⚠️</span>
+                <span id="errorMsgText">Something went wrong.</span>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             RESULTS DASHBOARD
+             ====================================================================== -->
+        <section class="results-section" id="resultsDashboard">
+
+            <!-- Stats Ribbon -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="statFaqCount">10</div>
+                    <div class="stat-label">FAQs Generated</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statBulletCount">0</div>
+                    <div class="stat-label">Summary Points</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statWordCount">0</div>
+                    <div class="stat-label">Document Words</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statReadingTime">~1 min</div>
+                    <div class="stat-label">Est. Read Time</div>
+                </div>
+            </div>
+
+            <!-- Results Toolbar & Navigation -->
+            <div class="results-header">
+                <div class="tabs-nav">
+                    <button class="tab-button active" data-tab="tabFaqs">
+                        ❓ Frequently Asked Questions (<span id="faqTabCount">10</span>)
+                    </button>
+                    <button class="tab-button" data-tab="tabSummary">
+                        📝 Executive Summary (<span id="summaryTabCount">Points</span>)
+                    </button>
+                    <button class="tab-button" data-tab="tabSystem">
+                        ⚙️ System & Tech Info
+                    </button>
+                </div>
+
+                <div class="action-toolbar">
+                    <!-- Live Search for FAQ Tab -->
+                    <div class="search-box" id="searchWrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Search questions...">
+                    </div>
+
+                    <button class="btn-tool" id="btnToggleAccordion">
+                        Expand All
+                    </button>
+
+                    <button class="btn-tool" id="btnDownloadTxt" title="Save entire output as text file">
+                        💾 Download .TXT
+                    </button>
+
+                    <button class="btn-tool" id="btnCopyAllOutput" title="Copy output to clipboard">
+                        📋 Copy All
+                    </button>
+
+                    <button class="btn-tool" id="btnPrintResults" title="Print document report">
+                        🖨️ Print / PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 1: FAQ ACCORDION -->
+            <div class="tab-content active" id="tabFaqs">
+                <div class="faq-list" id="faqContainer">
+                    <!-- FAQs injected here via JavaScript -->
+                </div>
+                <div class="no-results-msg" id="noFaqMatch" style="display: none;">
+                    No questions matched your search query. Try another keyword.
+                </div>
+            </div>
+
+            <!-- TAB 2: EXECUTIVE SUMMARY -->
+            <div class="tab-content" id="tabSummary">
+                <div class="summary-card">
+                    <div class="summary-actions-bar">
+                        <h4 class="summary-heading">Key Takeaways & Document Highlights</h4>
+                        <button class="btn-tool" id="btnCopySummaryOnly">📋 Copy Summary Points</button>
+                    </div>
+                    <ul class="bullet-list" id="summaryList">
+                        <!-- Bullets injected here via JavaScript -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB 3: SYSTEM ARCHITECTURE (For Viva Exam Presentation) -->
+            <div class="tab-content" id="tabSystem">
+                <div class="arch-card">
+                    <h4 class="summary-heading">System Implementation & Architecture Details</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 4px;">
+                        This system was designed and implemented using modern client-server architecture principles:
+                    </p>
+
+                    <div class="arch-grid">
+                        <div class="arch-item">
+                            <h4>Backend Framework</h4>
+                            <p>FastAPI (Python) with CORS middleware, asynchronous route handling, and multipart file upload processing.</p>
+                        </div>
+                        <div class="arch-item">
+                            <h4>NLP & AI Reasoning</h4>
+                            <p>Groq API using deep language models for high-speed prompt execution and question generation.</p>
+                        </div>
+                        <div class="arch-item">
+                            <h4>Document Parser Engine</h4>
+                            <p>Integrated <code>pypdf</code> for PDF stream reading, <code>python-docx</code> for Microsoft Word, and standard UTF-8 stream readers.</p>
+                        </div>
+                        <div class="arch-item">
+                            <h4>Frontend Architecture</h4>
+                            <p>Responsive Single-Page Application (SPA) built with Semantic HTML5, CSS3 Variables, and Vanilla ES6+ JavaScript.</p>
+                        </div>
+                    </div>
+
+                    <h5 style="margin-top: 20px; font-size: 0.9rem; font-weight: 700;">Raw Model Output Stream</h5>
+                    <div class="raw-text-view" id="rawOutputView"></div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Toast Popup -->
+    <div class="toast-box" id="toastBox">Message</div>
+
+    <!-- ==========================================================================
+         FOOTER
+         ========================================================================== -->
+    <footer class="site-footer">
+        <div>
+            <strong>FAQ Builder & Document Summarizer</strong> — Automated Question Generation System
+        </div>
+        <div class="footer-links">
+            Developed with Python, FastAPI, and Groq Language Processing Engine
+        </div>
+    </footer>
+
+    <!-- ==========================================================================
+         JAVASCRIPT APPLICATION LOGIC
+         ========================================================================== -->
+    <script>
+        // ======================================================================
+        // 1. CONFIGURATION & STATE
+        // ======================================================================
+        const API_URL = "http://127.0.0.1:8000/generate";
+        const HEALTH_URL = "http://127.0.0.1:8000/health";
+
+        let currentFile = null;
+        let allExpanded = false;
+        let parsedData = {
+            filename: "",
+            summaryBullets: [],
+            faqs: [],
+            rawText: ""
+        };
+
+        // DOM References
+        const dropArea = document.getElementById("dropArea");
+        const fileInput = document.getElementById("fileInput");
+        const fileSelectedBox = document.getElementById("fileSelectedBox");
+        const fileTypeIcon = document.getElementById("fileTypeIcon");
+        const fileNameText = document.getElementById("fileNameText");
+        const fileSizeText = document.getElementById("fileSizeText");
+        const btnClearFile = document.getElementById("btnClearFile");
+        const btnLoadSampleDoc = document.getElementById("btnLoadSampleDoc");
+        const btnProcessDoc = document.getElementById("btnProcessDoc");
+
+        const loadingCard = document.getElementById("loadingCard");
+        const loadingStageText = document.getElementById("loadingStageText");
+        const errorBox = document.getElementById("errorBox");
+        const errorMsgText = document.getElementById("errorMsgText");
+
+        const resultsDashboard = document.getElementById("resultsDashboard");
+        const statFaqCount = document.getElementById("statFaqCount");
+        const statBulletCount = document.getElementById("statBulletCount");
+        const statWordCount = document.getElementById("statWordCount");
+        const statReadingTime = document.getElementById("statReadingTime");
+
+        const faqContainer = document.getElementById("faqContainer");
+        const summaryList = document.getElementById("summaryList");
+        const rawOutputView = document.getElementById("rawOutputView");
+        const faqTabCount = document.getElementById("faqTabCount");
+        const summaryTabCount = document.getElementById("summaryTabCount");
+        const noFaqMatch = document.getElementById("noFaqMatch");
+
+        const searchInput = document.getElementById("searchInput");
+        const btnToggleAccordion = document.getElementById("btnToggleAccordion");
+        const btnDownloadTxt = document.getElementById("btnDownloadTxt");
+        const btnCopyAllOutput = document.getElementById("btnCopyAllOutput");
+        const btnCopySummaryOnly = document.getElementById("btnCopySummaryOnly");
+        const btnPrintResults = document.getElementById("btnPrintResults");
+
+        const backendBadge = document.getElementById("backendBadge");
+        const backendBadgeText = document.getElementById("backendBadgeText");
+        const btnTheme = document.getElementById("btnTheme");
+        const toastBox = document.getElementById("toastBox");
+
+        // ======================================================================
+        // 2. BACKEND HEALTH CHECK
+        // ======================================================================
+        async function checkServerHealth() {
+            try {
+                const res = await fetch(HEALTH_URL);
+                if (res.ok) {
+                    backendBadge.classList.remove("offline");
+                    backendBadgeText.textContent = "Server: Online (8000)";
+                } else {
+                    throw new Error();
+                }
+            } catch (e) {
+                backendBadge.classList.add("offline");
+                backendBadgeText.textContent = "Server: Offline";
+            }
+        }
+
+        checkServerHealth();
+        setInterval(checkServerHealth, 15000);
+
+        // ======================================================================
+        // 3. THEME TOGGLE
+        // ======================================================================
+        btnTheme.addEventListener("click", () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark");
+        });
+
+        // ======================================================================
+        // 4. FILE UPLOAD & DROPZONE
+        // ======================================================================
+        dropArea.addEventListener("click", () => fileInput.click());
+
+        ["dragenter", "dragover"].forEach(evt => {
+            dropArea.addEventListener(evt, (e) => {
+                e.preventDefault();
+                dropArea.classList.add("dragover");
+            });
+        });
+
+        ["dragleave", "drop"].forEach(evt => {
+            dropArea.addEventListener(evt, (e) => {
+                e.preventDefault();
+                dropArea.classList.remove("dragover");
+            });
+        });
+
+        dropArea.addEventListener("drop", (e) => {
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                selectFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener("change", (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                selectFile(e.target.files[0]);
+            }
+        });
+
+        function selectFile(file) {
+            const ext = "." + file.name.split(".").pop().toLowerCase();
+            const allowed = [".pdf", ".docx", ".txt"];
+
+            if (!allowed.includes(ext)) {
+                showError("Unsupported file type. Please select a .pdf, .docx, or .txt document.");
+                return;
+            }
+
+            currentFile = file;
+            fileNameText.textContent = file.name;
+            fileSizeText.textContent = formatBytes(file.size);
+            fileTypeIcon.textContent = ext.replace(".", "").toUpperCase();
+            
+            fileTypeIcon.style.background = 
+                ext === ".pdf" ? "#dc2626" : 
+                ext === ".docx" ? "#2563eb" : "#d97706";
+
+            fileSelectedBox.style.display = "flex";
+            btnProcessDoc.disabled = false;
+            hideError();
+            showToast(`Document loaded: ${file.name}`);
+        }
+
+        btnClearFile.addEventListener("click", () => {
+            currentFile = null;
+            fileInput.value = "";
+            fileSelectedBox.style.display = "none";
+            btnProcessDoc.disabled = true;
+        });
+
+        // Sample Document
+        btnLoadSampleDoc.addEventListener("click", () => {
+            const textContent = `Generative AI begins with a "foundation model"; a deep learning model that serves as the basis for multiple different types of generative AI applications.
+
+The most common foundation models today are large language models (LLMs), created for text generation applications. But there are also foundation models for image, video, sound or music generation, and multimodal foundation models that support several kinds of content.
+
+To create a foundation model, practitioners train a deep learning algorithm on huge volumes of relevant raw, unstructured, unlabeled data, such as terabytes or petabytes of data text or images or video from the internet. The training yields a neural network of billions of parameters encoded representations of the entities, patterns and relationships in the data that can generate content autonomously in response to prompts. This is the foundation model.
+
+This training process is compute-intensive, time-consuming and expensive. It requires thousands of clustered graphics processing units (GPUs) and weeks of processing, all of which typically costs millions of dollars. Open source foundation model projects, such as Meta's Llama-2, enable gen AI developers to avoid this step and its costs.`;
+
+            const blob = new Blob([textContent], { type: "text/plain" });
+            const sample = new File([blob], "AI_Foundation_Models_Sample.txt", { type: "text/plain" });
+            selectFile(sample);
+        });
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // ======================================================================
+        // 5. SERVER GENERATION HANDLER
+        // ======================================================================
+        btnProcessDoc.addEventListener("click", async () => {
+            if (!currentFile) return;
+
+            hideError();
+            resultsDashboard.style.display = "none";
+            btnProcessDoc.disabled = true;
+            loadingCard.style.display = "block";
+            loadingStageText.textContent = "Uploading & Analyzing Document...";
+
+            const formData = new FormData();
+            formData.append("file", currentFile);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || "Server error while generating summary.");
+                }
+
+                loadingCard.style.display = "none";
+                btnProcessDoc.disabled = false;
+                displayResults(data);
+                showToast("Summary & FAQs generated successfully!");
+
+            } catch (err) {
+                loadingCard.style.display = "none";
+                btnProcessDoc.disabled = false;
+                showError(err.message || "Failed to connect to backend server. Make sure python backend.py is running.");
+            }
+        });
+
+        // ======================================================================
+        // 6. RESULT RENDERING
+        // ======================================================================
+        function displayResults(data) {
+            const rawText = data.result || "";
+            parsedData.filename = data.filename || currentFile.name;
+            parsedData.rawText = rawText;
+
+            // Separate Summary & FAQs
+            let summaryPart = rawText;
+            let faqPart = "";
+
+            const faqIndex = rawText.indexOf("FAQ");
+            if (faqIndex !== -1) {
+                summaryPart = rawText.substring(0, faqIndex);
+                faqPart = rawText.substring(faqIndex);
+            }
+
+            // Parse Summary Points
+            const cleanSummary = summaryPart.replace(/SUMMARY/gi, "").replace(/={2,}/g, "").trim();
+            const bullets = cleanSummary
+                .split("\n")
+                .map(l => l.trim())
+                .filter(l => l.length > 0)
+                .map(l => l.replace(/^[-*•]\s*/, "").trim())
+                .filter(l => l.length > 0);
+
+            parsedData.summaryBullets = bullets;
+
+            // Parse FAQs
+            const faqRegex = /(\d+)\.\s*Question:\s*(.*?)\s*Answer:\s*(.*?)(?=\n\s*\d+\.\s*Question:|$)/gs;
+            const matches = [...faqPart.matchAll(faqRegex)];
+
+            let faqs = [];
+            if (matches.length > 0) {
+                faqs = matches.map((m, idx) => ({
+                    id: idx + 1,
+                    question: m[2].trim(),
+                    answer: m[3].trim()
+                }));
+            } else {
+                const fallbackItems = faqPart.replace(/FAQ/gi, "").replace(/={2,}/g, "").trim().split(/\n(?=\d+\.)/);
+                faqs = fallbackItems.map((item, idx) => {
+                    const lines = item.trim().split("\n");
+                    const q = (lines[0] || `Question ${idx + 1}`).replace(/^\d+\.\s*/, "");
+                    const a = lines.slice(1).join(" ") || "Answer extracted from document.";
+                    return { id: idx + 1, question: q, answer: a };
+                });
+            }
+
+            parsedData.faqs = faqs;
+
+            // Update Statistics
+            statFaqCount.textContent = faqs.length;
+            statBulletCount.textContent = bullets.length;
+            faqTabCount.textContent = faqs.length;
+            summaryTabCount.textContent = `${bullets.length} Points`;
+
+            const wordCount = rawText.split(/\s+/).length;
+            statWordCount.textContent = wordCount.toLocaleString();
+            statReadingTime.textContent = `~${Math.max(1, Math.ceil(wordCount / 200))} min`;
+
+            // Render Accordion FAQs
+            renderFaqs(faqs);
+
+            // Render Summary List
+            renderSummary(bullets);
+
+            // Set Raw Output
+            rawOutputView.textContent = rawText;
+
+            // Show Dashboard
+            resultsDashboard.style.display = "block";
+            resultsDashboard.scrollIntoView({ behavior: "smooth" });
+        }
+
+        function renderFaqs(items) {
+            faqContainer.innerHTML = "";
+
+            if (items.length === 0) {
+                noFaqMatch.style.display = "block";
+                return;
+            }
+            noFaqMatch.style.display = "none";
+
+            items.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "faq-item";
+                div.id = `faq-item-${item.id}`;
+
+                div.innerHTML = `
+                    <div class="faq-question-bar" onclick="toggleAccordion(${item.id})">
+                        <div class="faq-question-left">
+                            <span class="faq-index">Q${item.id}</span>
+                            <span class="faq-question-text">${escapeHtml(item.question)}</span>
+                        </div>
+                        <div class="faq-question-right">
+                            <button class="btn-copy-faq" onclick="event.stopPropagation(); copyFaqItem(${item.id})" title="Copy Q&A">
+                                📋 Copy
+                            </button>
+                            <span class="faq-arrow">▼</span>
+                        </div>
+                    </div>
+                    <div class="faq-answer-bar" id="faq-answer-${item.id}">
+                        <div class="faq-answer-inner">
+                            ${escapeHtml(item.answer)}
+                        </div>
+                    </div>
+                `;
+                faqContainer.appendChild(div);
+            });
+        }
+
+        function renderSummary(bullets) {
+            summaryList.innerHTML = "";
+            bullets.forEach(bullet => {
+                const li = document.createElement("li");
+                li.className = "bullet-item";
+                li.textContent = bullet;
+                summaryList.appendChild(li);
+            });
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // ======================================================================
+        // 7. INTERACTIVE ACCORDION & SEARCH
+        // ======================================================================
+        window.toggleAccordion = function(id) {
+            const item = document.getElementById(`faq-item-${id}`);
+            const answer = document.getElementById(`faq-answer-${id}`);
+            if (!item || !answer) return;
+
+            const isOpen = item.classList.contains("active");
+            if (isOpen) {
+                answer.style.maxHeight = null;
+                item.classList.remove("active");
+            } else {
+                answer.style.maxHeight = answer.scrollHeight + "px";
+                item.classList.add("active");
+            }
+        };
+
+        btnToggleAccordion.addEventListener("click", () => {
+            allExpanded = !allExpanded;
+            const items = document.querySelectorAll(".faq-item");
+            items.forEach(item => {
+                const answer = item.querySelector(".faq-answer-bar");
+                if (allExpanded) {
+                    item.classList.add("active");
+                    answer.style.maxHeight = answer.scrollHeight + "px";
+                } else {
+                    item.classList.remove("active");
+                    answer.style.maxHeight = null;
+                }
+            });
+            btnToggleAccordion.textContent = allExpanded ? "Collapse All" : "Expand All";
+        });
+
+        // Search Filter
+        searchInput.addEventListener("input", (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const items = document.querySelectorAll(".faq-item");
+            let count = 0;
+
+            items.forEach(item => {
+                const qText = item.querySelector(".faq-question-text").textContent.toLowerCase();
+                const aText = item.querySelector(".faq-answer-inner").textContent.toLowerCase();
+
+                if (qText.includes(query) || aText.includes(query)) {
+                    item.style.display = "block";
+                    count++;
+                } else {
+                    item.style.display = "none";
+                }
+            });
+
+            noFaqMatch.style.display = count === 0 ? "block" : "none";
+        });
+
+        // ======================================================================
+        // 8. TABS CONTROLLER
+        // ======================================================================
+        document.querySelectorAll(".tab-button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+                document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+                btn.classList.add("active");
+                const targetId = btn.getAttribute("data-tab");
+                const targetContent = document.getElementById(targetId);
+                if (targetContent) targetContent.classList.add("active");
+
+                // Show search only on FAQ tab
+                const searchBox = document.getElementById("searchWrapper");
+                const toggleBtn = document.getElementById("btnToggleAccordion");
+                if (targetId === "tabFaqs") {
+                    searchBox.style.display = "block";
+                    toggleBtn.style.display = "inline-flex";
+                } else {
+                    searchBox.style.display = "none";
+                    toggleBtn.style.display = "none";
+                }
+            });
+        });
+
+        // ======================================================================
+        // 9. COPY & EXPORT FUNCTIONS
+        // ======================================================================
+        window.copyFaqItem = function(id) {
+            const item = parsedData.faqs.find(f => f.id === id);
+            if (!item) return;
+            const text = `Q: ${item.question}\nA: ${item.answer}`;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`Question ${id} copied to clipboard!`);
+            });
+        };
+
+        btnCopyAllOutput.addEventListener("click", () => {
+            let fullText = `DOCUMENT SUMMARY & FAQ REPORT\nSource: ${parsedData.filename}\n\n=== EXECUTIVE SUMMARY ===\n`;
+            parsedData.summaryBullets.forEach(b => {
+                fullText += `• ${b}\n`;
+            });
+            fullText += `\n=== FREQUENTLY ASKED QUESTIONS ===\n`;
+            parsedData.faqs.forEach(f => {
+                fullText += `\n${f.id}. Question: ${f.question}\n   Answer: ${f.answer}\n`;
+            });
+
+            navigator.clipboard.writeText(fullText).then(() => {
+                showToast("Complete Summary and FAQs copied!");
+            });
+        });
+
+        btnCopySummaryOnly.addEventListener("click", () => {
+            const text = parsedData.summaryBullets.map(b => `• ${b}`).join("\n");
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Summary points copied to clipboard!");
+            });
+        });
+
+        btnDownloadTxt.addEventListener("click", () => {
+            let fullText = `DOCUMENT SUMMARY & FREQUENTLY ASKED QUESTIONS\nFile: ${parsedData.filename}\nGenerated via Automated NLP System\n\n----------------------------------------\nEXECUTIVE SUMMARY\n----------------------------------------\n`;
+            parsedData.summaryBullets.forEach(b => {
+                fullText += `• ${b}\n`;
+            });
+            fullText += `\n----------------------------------------\nFREQUENTLY ASKED QUESTIONS (Q&A)\n----------------------------------------\n`;
+            parsedData.faqs.forEach(f => {
+                fullText += `\n${f.id}. Question: ${f.question}\n   Answer: ${f.answer}\n`;
+            });
+
+            const blob = new Blob([fullText], { type: "text/plain;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `FAQ_Summary_${parsedData.filename.replace(/\.[^/.]+$/, "")}.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showToast("Report downloaded as .txt file!");
+        });
+
+        btnPrintResults.addEventListener("click", () => {
+            // Open all questions before printing
+            document.querySelectorAll(".faq-item").forEach(item => {
+                item.classList.add("active");
+                item.querySelector(".faq-answer-bar").style.maxHeight = "none";
+            });
+            window.print();
+        });
+
+        // Helpers
+        function showToast(msg) {
+            toastBox.textContent = msg;
+            toastBox.style.display = "block";
+            setTimeout(() => {
+                toastBox.style.display = "none";
+            }, 3000);
+        }
+
+        function showError(msg) {
+            errorMsgText.textContent = msg;
+            errorBox.style.display = "flex";
+        }
+
+        function hideError() {
+            errorBox.style.display = "none";
+        }
+    </script>
+</body>
+
+</html>

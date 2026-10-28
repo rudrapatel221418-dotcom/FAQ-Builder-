@@ -1,0 +1,19 @@
+Generative AI begins with a "foundation model";
+ a deep learning model that serves as the basis for multiple different types of 
+ generative AI applications.
+
+The most common foundation models today are large language models (LLMs), 
+created for text generation applications. But there are also foundation models for image, 
+video, sound or music generation, and multimodal foundation models that support several kinds 
+of content.
+
+To create a foundation model, practitioners train a deep learning algorithm on huge volumes 
+of relevant raw, unstructured, unlabeled data, such as terabytes or petabytes of data text or 
+images or video from the internet. The training yields a neural network of billions of parameters
+ encoded representations of the entities, patterns and relationships in the data that can generate 
+ content autonomously in response to prompts. This is the foundation model.
+
+This training process is compute-intensive, time-consuming and expensive. It requires thousands of 
+clustered graphics processing units (GPUs) and weeks of processing, all of which typically 
+costs millions of dollars. Open source foundation model projects, such as Meta's Llama-2, enable
+ gen AI developers to avoid this step and its costs.
